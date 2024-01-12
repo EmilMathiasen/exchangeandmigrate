@@ -38,6 +38,9 @@ function New-MigrationApp {
     New-ManagementRoleAssignment -Role ApplicationImpersonation -User $Impersonator
     Get-Mailbox -ResultSize Unlimited | Set-Mailbox -MaxReceiveSize 153600000 -MaxSendSize 153600000
 
+    Disconnect-MgGraph
+    Disconnect-ExchangeOnline
+
     
     return @{
           TenantID    = $((Get-MgOrganization).Id)
