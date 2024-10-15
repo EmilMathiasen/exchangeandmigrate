@@ -2,6 +2,7 @@
 
 ## Overview
 The New-MigrationApp function is a PowerShell script designed to automate the creation of a new application and service principal in Microsoft 365 for migration purposes. This script simplifies the process outlined in the MigrationWiz documentation by handling the necessary steps to set up an application with the required permissions.
+The Documentation: https://help.bittitan.com/hc/en-us/articles/360034124813-Authentication-Methods-for-Microsoft-365-All-Products-Migrations#h_01H9J5G42WAQWTBGHFKC3JRQC9
 
 ## Prerequisites
 Before using this script, make sure you have the following:
