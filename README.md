@@ -7,22 +7,24 @@ The Documentation: https://help.bittitan.com/hc/en-us/articles/360034124813-Auth
 ## Prerequisites
 Before using this script, make sure you have the following:
 
-PowerShell environment configured with the required modules.
+PowerShell environment configured with the required modules. Powershell 7, with The Exchange Online Module and Mgraph Module
 Appropriate permissions to create applications and service principals in Microsoft 365.
 Knowledge of the application name ($AppName) and the username of the impersonation user ($Impersonator).
 
+
 ## Usage
 
-1. Open a PowerShell environment.
-2. Copy and paste the content of New-MigrationApp function into the PowerShell console.
-3. Call the function New-MigrationApp with the required parameters:
+1. Save the file, to a folder
+2. Open the powershell eviroment and navigate the folder in which you saved the file
+3. Start the script by running  ".\migrate3.ps1"
    
 ´´´powershell
 New-MigrationApp -AppName "YourApplicationName" -Impersonator "ImpersonationUserName"
 ´´´
 ## Parameters
 * AppName: The name of the new application. Mandatory parameter.
-* Impersonator: The username of the impersonation user. Mandatory parameter.
+* Impersonator: The username of the impersonation/Global Admin user. Mandatory parameter.
+* Define the name of the logfile. I recommend the Project name/domain name
 
 ## Author
 

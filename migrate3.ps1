@@ -1,17 +1,17 @@
 function New-MigrationApp {
       #       Todo; Check if each of these scopes are actually necessary for this project.
       #       Changed to applying full acces
-      #       Author: emil.mathiasen@team.blue
-      #       Version: 2.0.0
+      #       Author: emilthisen@gmail.com
+      #       Version: 2.0.3
       param (
             [Parameter(Mandatory = $true, HelpMessage = "Insert Name of the New Application.")]
             [string]$AppName,
-            [Parameter(Mandatory = $true, HelpMessage = "Insert username of the Impersonation User.")]
+            [Parameter(Mandatory = $true, HelpMessage = "Insert username of the Impersonation/Global Admin User.")]
             [string]$Impersonator
       )
       write-host "Disconnecting from leftover sessions Graph Sessions" 
       
-      Disconnect-MgGraph
+      Disconnect-MgGraph -ErrorAction SilentlyContinue
 
       Write-host "Connecting in Exchange Online"
 
@@ -30,7 +30,7 @@ function New-MigrationApp {
       Get-Mailbox -ResultSize Unlimited | Set-Mailbox -MaxReceiveSize 153600000 -MaxSendSize 153600000
       ##Dansk sprog sættes her? ja nej:
       Write-Host "Language for the mailbox?"
-      $confirmation = Read-Host "Do you want to update the mailbox regional configuration to Danish/Dansk? (Yes/No)"
+      $confirmation = Read-Host "Do you want to update All mailboxes regional configuration to Danish/Dansk? (Yes/No)"
 
       if ($confirmation -eq "Yes") {
             # Execute the command if the answer is Yes
@@ -42,11 +42,11 @@ function New-MigrationApp {
         }
        
       Write-Host "Still thinking... Almost there..."
-      Start-Sleep -Seconds 2
+      Start-Sleep -Seconds 4
 
 
       write-host  "Done - Lets do the application"
-      Start-Sleep -Seconds 2
+      Start-Sleep -Seconds 4
       Write-Host "Connecting to MgGraph"
       Connect-MgGraph -Scopes "User.Read.All", "Group.ReadWrite.All", "Application.ReadWrite.All", "Directory.AccessAsUser.All", "Directory.ReadWrite.All", "RoleManagement.ReadWrite.Directory", "AppRoleAssignment.ReadWrite.All", "Organization.ReadWrite.All"
     
@@ -93,17 +93,13 @@ function New-MigrationApp {
       -AppRoleId $fullAccessRoleId
 
 
-      # New-MgServicePrincipalAppRoleAssignment -ServicePrincipalId $ServicePrincipalId -BodyParameter $params2
-
-      # New-ManagementRoleAssignment -Role ApplicationImpersonation -User $Impersonator
-      # Deprecated
 
       # Using MGRAPH / 
       ## Documentation: https://help.bittitan.com/hc/en-us/articles/27481872521115-M365-Mailbox-and-Archive-Migrations-Performing-Migration-using-only-API-permissions#h_01J32YXTKMC07Q7YZD218GRMGX
       # Setting full_ascces_as_app
    
       
-      ## Seting  a client secret on application
+      ## Seting a client secret on application
       ## Documentation: https://help.bittitan.com/hc/en-us/articles/27481872521115-M365-Mailbox-and-Archive-Migrations-Performing-Migration-using-only-API-permissions#h_01J32YXTKMC07Q7YZD218GRMGX
       Write-host "Setting a client Secret"
       Start-Sleep -Seconds 5
@@ -118,10 +114,21 @@ function New-MigrationApp {
             TenantID    = $((Get-MgOrganization).Id)
       }
 
-      
+      Write-Host "Remember to write down the client secret."
       Write-host "Disconnecting from Mgraph-Module"
 }
+
+## Loggin
+Write-host "Starting the log"
+
+$logFileName = Read-Host "Enter the name for the log file (Ex. the migration Project name)"
+$logFilePath = Join-Path -Path "C:\logs\" -ChildPath "$logFileName.txt"
+Start-Transcript -Path $logFilePath
+
 New-MigrationApp
+write-host "Stop transcript"
+write-host "The logfile will be located in c:\logs\"
+Stop-Transcript
 
 Disconnect-MgGraph
 Disconnect-ExchangeOnline
